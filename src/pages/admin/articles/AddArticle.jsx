@@ -6,6 +6,7 @@ import Col from "react-bootstrap/Col";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Menu from "../../../components/Menu";
+import AddMedia from "../../media/AddMedia.jsx";
 
 const AddArticle = () => {
   const navigate = useNavigate();
