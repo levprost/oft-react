@@ -7,7 +7,7 @@ import Home from "./pages/Home";
 // 1.Admin
 
 // 1.1 Articles
-import Articles from './pages/admin/articles/Articles';
+import Articles from "./pages/admin/articles/Articles";
 import AddArticle from './pages/admin/articles/AddArticle';
 import EditArticle from './pages/admin/articles/EditArticle';
 
@@ -29,7 +29,7 @@ function App() {
     <Route path="/" element={<Home />} />
     <Route path="*" element={<Home />} />
 
-    <Route path="/admin/article/articles" element={<Articles />} />
+    <Route path="/admin/article" element={<Articles />} />
     <Route path="/admin/article/add" element={<AddArticle />} />
     <Route path="/admin/article/edit/:article" element={<EditArticle />} /> 
 

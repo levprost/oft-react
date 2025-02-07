@@ -14,10 +14,17 @@ const Articles = () => {
   }, []); // Sans les crochets ça tourne en boucle
 
   const displayArticles = async () => {
-    await axios.get("http://127.0.0.1:8000/api/articles").then((res) => {
-      setArticles(res.data);
-    });
+    try {
+      const res = await axios.get("http://127.0.0.1:8000/api/articles");
+      setArticles(res.data); 
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
+
+  const deleteArticle = (id) => { 
+    axios.delete(`http://127.0.0.1:8000/api/articles/${id}`).then(displayArticles); 
+  }; 
   return (
     <div>
       <Menu />
@@ -48,6 +55,16 @@ const Articles = () => {
                   >
                     Edit
                   </Link>
+                </td>
+                <td>
+                <Button 
+                    variant="danger" 
+                    onClick={() => { 
+                      deleteArticle(article.id); 
+                    }} 
+                  > 
+                    Supprimer 
+                  </Button> 
                 </td>
               </tr>
             ))}
