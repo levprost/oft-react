@@ -65,10 +65,10 @@ const AddMedia = () => {
   //si on veut supprimer un fichier dans le liste
   const removeFile = (indexToRemove) => {
     const updatedFiles = mediaFiles.filter((file, index) => {
-        return index !== indexToRemove; // Оставляем все файлы, кроме удаляемого
+        return index !== indexToRemove; // supprime tous sauf ce qu'on veut retire de la liste
     });
 
-    setMediaFiles(updatedFiles); // Обновляем состояние
+    setMediaFiles(updatedFiles); // Mettre à jour
 };
 
   // Changement de type de fichiers
@@ -134,7 +134,6 @@ const AddMedia = () => {
                   <Form.Control type="file" multiple accept=".jpg,.jpeg,.png,.gif,.svg" onChange={handleFileChange} />
                 </div>
 
-                {/* Список загруженных файлов */}
                 {mediaFiles.length > 0 && (
                   <div className="mt-3">
                     <h5>Fichiers sélectionnés :</h5>

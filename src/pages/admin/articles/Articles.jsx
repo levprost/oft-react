@@ -8,7 +8,6 @@ import { Link } from "react-router-dom";
 const Articles = () => {
   const [articles, setArticles] = useState([]);
 
-
   useEffect(() => {
     displayArticles();
   }, []); // Sans les crochets ça tourne en boucle
@@ -16,15 +15,17 @@ const Articles = () => {
   const displayArticles = async () => {
     try {
       const res = await axios.get("http://127.0.0.1:8000/api/articles");
-      setArticles(res.data); 
+      setArticles(res.data);
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
-  const deleteArticle = (id) => { 
-    axios.delete(`http://127.0.0.1:8000/api/articles/${id}`).then(displayArticles); 
-  }; 
+  const deleteArticle = (id) => {
+    axios
+      .delete(`http://127.0.0.1:8000/api/articles/${id}`)
+      .then(displayArticles);
+  };
   return (
     <div>
       <Menu />
@@ -37,7 +38,6 @@ const Articles = () => {
               <th>Type d'article</th>
               <th>Contenu d'article</th>
               <th>Section d'article</th>
-
             </tr>
           </thead>
           <tbody>
@@ -50,21 +50,21 @@ const Articles = () => {
                 <td>{article.section_article}</td>
                 <td>
                   <Link
-                    to={`/articles/edit/${article.id}`}
+                    to={`/admin/article/edit/${article.id}`}
                     className="btn btn-success me-2"
                   >
                     Edit
                   </Link>
                 </td>
                 <td>
-                <Button 
-                    variant="danger" 
-                    onClick={() => { 
-                      deleteArticle(article.id); 
-                    }} 
-                  > 
-                    Supprimer 
-                  </Button> 
+                  <Button
+                    variant="danger"
+                    onClick={() => {
+                      deleteArticle(article.id);
+                    }}
+                  >
+                    Supprimer
+                  </Button>
                 </td>
               </tr>
             ))}

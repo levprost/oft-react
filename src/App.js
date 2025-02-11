@@ -35,13 +35,13 @@ function App() {
 
     <Route path="/admin/article" element={<Articles />} />
     <Route path="/admin/article/add" element={token ? <AddArticle /> : <Login/>} />
-    <Route path="/admin/article/edit/:article" element={<EditArticle />} /> 
+    <Route path="/admin/article/edit/:article" element={<EditArticle />} />
 
     <Route path="/admin/media" element={<Media />} />
     <Route path="/admin/media/add" element={<AddMedia />} />
     <Route path="/admin/media/edit/:media" element={<EditMedia />} />
 
-    <Route path="/admin/places" element={<Places />} />
+    <Route path="/admin/place" element={<Places />} />
     <Route path="/admin/place/add" element={token ? <AddPlace /> : <Login/>}></Route>
     <Route path="/admin/place/edit/:place" element={<EditPlace />} />
 
