@@ -3,8 +3,10 @@ import './App.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
+import Login from './pages/admin/Login';
 
 // 1.Admin
+
 
 // 1.1 Articles
 import Articles from "./pages/admin/articles/Articles";
@@ -21,6 +23,8 @@ import Places from './pages/admin/places/Places';
 import AddPlace from './pages/admin/places/AddPlace';
 import EditPlace from './pages/admin/places/EditPlace';
 
+const token = localStorage.getItem("access_token");
+console.log(token);
 
 function App() {
   return ( 
@@ -30,7 +34,7 @@ function App() {
     <Route path="*" element={<Home />} />
 
     <Route path="/admin/article" element={<Articles />} />
-    <Route path="/admin/article/add" element={<AddArticle />} />
+    <Route path="/admin/article/add" element={token ? <AddArticle /> : <Login/>} />
     <Route path="/admin/article/edit/:article" element={<EditArticle />} /> 
 
     <Route path="/admin/media" element={<Media />} />
@@ -38,9 +42,10 @@ function App() {
     <Route path="/admin/media/edit/:media" element={<EditMedia />} />
 
     <Route path="/admin/places" element={<Places />} />
-    <Route path="/admin/place/add" element={<AddPlace />} />
+    <Route path="/admin/place/add" element={token ? <AddPlace /> : <Login/>}></Route>
     <Route path="/admin/place/edit/:place" element={<EditPlace />} />
 
+    <Route path="/login/scrt1337" element={<Login />} />
 
     </Routes> 
 </BrowserRouter> 

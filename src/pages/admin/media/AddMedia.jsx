@@ -45,49 +45,52 @@ const AddMedia = () => {
     setMediaFiles([...mediaFiles, ...newFiles]); //Spread operator - pour mettre tous dans MediaFiles
   };
 
-  // 
+  //Pour mettre le fichier depuis l'ordinateur 
   const handleDrop = (event) => {
-    event.preventDefault();
-    const selectedFiles = Array.from(event.dataTransfer.files);
-    const filteredFiles = selectedFiles.filter((file) => allowedFormats.includes(file.type));
+    event.preventDefault();//ça va pas afficher le fichier dans nouveau fênetre
+    const selectedFiles = Array.from(event.dataTransfer.files); // pour avoir l'accés aux fichiers on les met dans un tableau
+    const filteredFiles = selectedFiles.filter((file) => allowedFormats.includes(file.type));//filtrer tous les fichiers(voir les lignes 34-35)
 
     if (filteredFiles.length < selectedFiles.length) {
       alert("Certains fichiers ont été ignorés car ils ne sont pas dans un format valide.");
     }
 
     const newFiles = filteredFiles.map((file) => ({
-      file,
-      type: "image",
+      file, //on mets le fichiers
+      type: "image",//type par defaut 'image'
     }));
-    setMediaFiles([...mediaFiles, ...newFiles]);
+    setMediaFiles([...mediaFiles, ...newFiles]);// on mets tous dans une tableau pour pouvoir enrigistrer
+    //le fichiers qui étaient enrigistrés et cel qui vient d'étre enrigistré
   };
+  //si on veut supprimer un fichier dans le liste
+  const removeFile = (indexToRemove) => {
+    const updatedFiles = mediaFiles.filter((file, index) => {
+        return index !== indexToRemove; // Оставляем все файлы, кроме удаляемого
+    });
 
-  // 🔹 Удаление файла из списка
-  const removeFile = (index) => {
-    setMediaFiles(mediaFiles.filter((_, i) => i !== index)); //Spread operator - pour mettre tous dans MediaFiles
-  };
+    setMediaFiles(updatedFiles); // Обновляем состояние
+};
 
-  // 🔹 Изменение типа файла (image/video)
+  // Changement de type de fichiers
   const updateFileType = (index, newType) => {
-    const updatedFiles = [...mediaFiles];
-    updatedFiles[index].type = newType;
+    const updatedFiles = [...mediaFiles];//on copie le mediaFiles avec Spread pour éviter le changement direct(on fait le changement d'abord dans le updateFiles)
+    updatedFiles[index].type = newType;//on récupere le fichiers par index puis on change ça valuer type pour newTpe
     setMediaFiles(updatedFiles);
   };
 
-  // 🔹 Отправка формы
   const addMedia = async (e) => {
     e.preventDefault();
     if (mediaFiles.length === 0) {
-      alert("Veuillez sélectionner au moins un fichier !");
+      alert("Veuillez sélectionner au moins un fichier !");//si il ya rien = alert
       return;
     }
 
     const formData = new FormData();
     mediaFiles.forEach(({ file, type }) => {
-      formData.append("media[]", file);
-      formData.append("type_media[]", type);
+      formData.append("media[]", file);//c'est un tableau pour récuperer plusieure media et type 
+      formData.append("type_media[]", type);// dans le back-end c'est une bocle qui récuper le tableau aussi
     });
-    formData.append("article_id", articleId);
+    formData.append("article_id", articleId);//la dérniere article créé
 
     try {
       await axios.post("http://127.0.0.1:8000/api/media", formData, {
