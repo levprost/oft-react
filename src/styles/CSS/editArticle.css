@@ -1,0 +1,119 @@
+/* Основные стили */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+  }
+  
+
+  .container {
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  /* Заголовок и форма */
+  .card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    background-color: #fff;
+  }
+  
+  .card-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #343a40;
+  }
+  
+  .card-body {
+    padding: 30px;
+  }
+  
+  .form-wrapper {
+    margin-bottom: 30px;
+  }
+  
+  .alert-danger {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+    padding: 10px;
+    border-radius: 4px;
+  }
+  
+  .form-control {
+    border-radius: 4px;
+    padding: 10px;
+    border: 1px solid #ced4da;
+  }
+  
+  .form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 5px rgba(38, 143, 255, 0.5);
+  }
+  
+  button.btn {
+    border-radius: 4px;
+    padding: 10px 20px;
+  }
+  
+  button.btn-danger {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+  }
+  
+  button.btn-danger:hover {
+    background-color: #c82333;
+  }
+  
+  button.delete-btn {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 5px;
+  }
+  
+  button.delete-btn:hover {
+    background-color: #c82333;
+  }
+  
+  /* Грид для медиафайлов */
+
+  
+  .media-item {
+    position: relative;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #f8f9fa;
+  }
+  
+  .media-thumbnail {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .media-container {
+    padding: 10px;
+  }
+  
+  .media-item:hover {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Сообщение о пустых медиафайлах */
+  .media-grid p {
+    text-align: center;
+    color: #6c757d;
+    font-size: 18px;
+    margin-top: 30px;
+  }
+  

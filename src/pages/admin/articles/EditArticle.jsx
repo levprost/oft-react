@@ -1,68 +1,103 @@
 import React, { useState, useEffect } from "react";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { Form, Button, Row, Col } from "react-bootstrap";
 import Menu from "../../../components/Menu";
+import "../../../styles/CSS/editArticle.css"
 
 const EditArticle = () => {
   const { article } = useParams(); // ID URL
   const navigate = useNavigate();
 
   const [titleArticle, setTitleArticle] = useState("");
+  const [oldTitleArticle, setOldTitleArticle] = useState("");
   const [contentArticle, setContentArticle] = useState("");
   const [typeArticle, setTypeArticle] = useState("");
   const [content2Article, setContent2Article] = useState("");
   const [sectionArticle, setSectionArticle] = useState("");
-
+  const [mediaFiles, setMediaFiles] = useState([]);
   const [validationError, setValidationError] = useState({});
 
   useEffect(() => {
-    getArticle(); // preloader ARTICLE
+    getArticle(); // Preloader ARTICLE
   }, [article]);
 
+  const [showModal, setShowModal] = useState(false);//pour aggrandir le media
+  const [selectedImage, setSelectedImage] = useState('');
+  // Fetch article data
   const getArticle = async () => {
-    await axios
-      .get(`http://127.0.0.1:8000/api/articles/${article}`)
-      .then((res) => {
-        setTitleArticle(res.data.title_article);
-        setContentArticle(res.data.content_article);
-        setTypeArticle(res.data.type_article);
-        setContent2Article(res.data.content2_article);
-        setSectionArticle(res.data.section_article);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    try {
+      const res = await axios.get(
+        `http://127.0.0.1:8000/api/articles/${article}`
+      );
+      console.log("API:", res.data.article);
+
+      setOldTitleArticle(res.data.article.title_article);
+      setTitleArticle(res.data.article.title_article);
+      setContentArticle(res.data.article.content_article);
+      setTypeArticle(res.data.article.type_article);
+      setContent2Article(res.data.article.content2_article);
+      setSectionArticle(res.data.article.section_article);
+
+      // Now fetch media related to this article
+      getMediaFiles();
+    } catch (error) {
+      console.error("Ошибка при загрузке статьи:", error);
+    }
   };
 
+  // Fetch media files associated with the article
+  const getMediaFiles = async () => {
+    try {
+      const res = await axios.get(
+        `http://127.0.0.1:8000/api/media/${article}/media`
+      );
+      console.log("Media Files:", res.data);
+
+      // Assuming the response is an array of media files
+      setMediaFiles(res.data);
+    } catch (error) {
+      console.error("Ошибка при загрузке медиафайлов:", error);
+    }
+  };
+
+  // Update article details
   const updateArticle = async (e) => {
     e.preventDefault();
 
     const data = {
-        title_article: titleArticle,
-        content_article: contentArticle,
-        type_article: typeArticle,
-        content2_article: content2Article,
-        section_article: sectionArticle,
-        _method: "PUT", // Laravel besoin _method pour PUT/PATCH
+      title_article: titleArticle,
+      content_article: contentArticle,
+      type_article: typeArticle,
+      content2_article: content2Article,
+      section_article: sectionArticle,
+      _method: "PUT",
     };
 
-    await axios
-        .post(`http://127.0.0.1:8000/api/articles/${article}`, data, {
-            headers: { "Content-Type": "application/json" },
-        })
-        .then(() => navigate("/admin/article"))
-        .catch(({ response }) => {
-            if (response?.status === 422) {
-                console.error("Ошибка валидации:", response.data.errors);
-                setValidationError(response.data.errors);
-            }
-        });
-};
+    try {
+      await axios.post(`http://127.0.0.1:8000/api/articles/${article}`, data, {
+        headers: { "Content-Type": "application/json" },
+      });
+      navigate("/admin/article");
+    } catch ({ response }) {
+      if (response?.status === 422) {
+        console.error("Ошибка валидации:", response.data.errors);
+        setValidationError(response.data.errors);
+      }
+    }
+  };
 
+  // Handle delete media
+  const handleDeleteMedia = async (mediaId) => {
+    try {
+      await axios.delete(
+        `http://127.0.0.1:8000/api/media/${mediaId}`
+      );
+      setMediaFiles(mediaFiles.filter((media) => media.id !== mediaId)); // Remove deleted media
+    } catch (error) {
+      console.error("Ошибка при удалении медиафайла:", error);
+    }
+  };
 
   return (
     <div>
@@ -82,7 +117,7 @@ const EditArticle = () => {
                           <li key={key}>{value}</li>
                         ))}
                       </ul>
-                </div>
+                    </div>
                   )}
                   <Form onSubmit={updateArticle}>
                     <Row>
@@ -91,7 +126,7 @@ const EditArticle = () => {
                           <Form.Label>Titre d'article</Form.Label>
                           <Form.Control
                             type="text"
-                            value={titleArticle}
+                            defaultValue={oldTitleArticle}
                             onChange={(event) =>
                               setTitleArticle(event.target.value)
                             }
@@ -99,27 +134,29 @@ const EditArticle = () => {
                         </Form.Group>
                       </Col>
                     </Row>
-                    <Row>
-                      <Col>
-                        <Form.Group controlId="ContentArticle">
-                          <Form.Label>Contenu d'article</Form.Label>
-                          <Form.Control
-                            type="text"
-                            value={contentArticle}
-                            onChange={(event) =>
-                              setContentArticle(event.target.value)
-                            }
-                          />
-                        </Form.Group>
-                      </Col>
-                    </Row>
+
+                    <Form.Group controlId="ContentArticle">
+                      <Form.Label>
+                        {contentArticle
+                          ? `Ancien contenu: ${contentArticle}`
+                          : "Contenu d'article"}
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        defaultValue={contentArticle}
+                        onChange={(event) =>
+                          setContentArticle(event.target.value)
+                        }
+                      />
+                    </Form.Group>
+
                     <Row>
                       <Col>
                         <Form.Group controlId="Content2Article">
                           <Form.Label>Deuxième contenu d'article</Form.Label>
                           <Form.Control
                             type="text"
-                            value={content2Article}
+                            defaultValue={content2Article}
                             onChange={(event) =>
                               setContent2Article(event.target.value)
                             }
@@ -127,13 +164,14 @@ const EditArticle = () => {
                         </Form.Group>
                       </Col>
                     </Row>
+
                     <Row>
                       <Col>
                         <Form.Group controlId="TypeArticle">
                           <Form.Label>Type d'article</Form.Label>
                           <Form.Control
                             as="select"
-                            value={typeArticle}
+                            defaultValue={typeArticle}
                             onChange={(event) =>
                               setTypeArticle(event.target.value)
                             }
@@ -148,22 +186,49 @@ const EditArticle = () => {
                         </Form.Group>
                       </Col>
                     </Row>
+
                     <Row>
-                        <Col>
-                          <Form.Group controlId="SectionArticle">
-                            <Form.Label>Section d'article</Form.Label>
-                            <Form.Control
-                              type="text"
-                              value={sectionArticle}
-                              onChange={(event) => setSectionArticle(event.target.value)}
-                            />
-                          </Form.Group>
-                        </Col>
-                      </Row>
+                      <Col>
+                        <Form.Group controlId="SectionArticle">
+                          <Form.Label>Section d'article</Form.Label>
+                          <Form.Control
+                            type="text"
+                            defaultValue={sectionArticle}
+                            onChange={(event) =>
+                              setSectionArticle(event.target.value)
+                            }
+                          />
+                        </Form.Group>
+                      </Col>
+                    </Row>
+
                     <Button variant="primary" className="mt-2" type="submit">
                       Enregistrer
                     </Button>
                   </Form>
+                </div>
+                <div className="media-grid">
+                  {mediaFiles.length > 0 ? (
+                    mediaFiles.map((media) => (
+                      <div key={media.id} className="media-item">
+                        <div className="media-container">
+                          <img
+                            src={`http://127.0.0.1:8000/storage/uploads/${media.media}`}
+                            alt={`media-${media.id}`}
+                            className="media-thumbnail"
+                          />
+                          <button
+                            className="btn btn-danger delete-btn"
+                            onClick={() => handleDeleteMedia(media.id)}
+                          >
+                            Supprimer
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p>Pad de média pour cette article.</p>
+                  )}
                 </div>
               </div>
             </div>
