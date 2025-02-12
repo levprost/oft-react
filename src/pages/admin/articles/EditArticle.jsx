@@ -22,8 +22,7 @@ const EditArticle = () => {
     getArticle(); // Preloader ARTICLE
   }, [article]);
 
-  const [showModal, setShowModal] = useState(false);//pour aggrandir le media
-  const [selectedImage, setSelectedImage] = useState('');
+
   // Fetch article data
   const getArticle = async () => {
     try {

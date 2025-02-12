@@ -1,4 +1,8 @@
+
 import React, { useEffect, useState } from "react";
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
@@ -6,6 +10,14 @@ import Col from "react-bootstrap/Col";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import Menu from "../../../components/Menu";
+
+// Fix for default marker icon issue
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
+  iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+});
 
 const EditPlace = () => {
   const { id } = useParams(); // Получаем ID из URL
@@ -25,7 +37,6 @@ const EditPlace = () => {
     getPlace();
   }, []);
 
-  // Загружаем список статей
   const getArticles = async () => {
     try {
       const res = await axios.get("http://127.0.0.1:8000/api/articles");
@@ -62,9 +73,11 @@ const EditPlace = () => {
       formData.append("longitude_place", longitudePlace);
       formData.append("article_id", articleId);
 
+      formData.append("_method", "PUT");
+
       await axios.post(`http://127.0.0.1:8000/api/places/${id}`, formData);
 
-      navigate("/admin/places"); // Перенаправление после обновления
+      navigate("/admin/places");
     } catch (error) {
       if (error.response && error.response.status === 422) {
         setValidationError(error.response.data.errors);
@@ -72,6 +85,27 @@ const EditPlace = () => {
         console.error("Le lieu n'a pas été mis à jour", error);
       }
     }
+  };
+
+  const LocationMarker = () => {
+    const map = useMapEvents({
+      click(e) {
+        setLatitudePlace(e.latlng.lat);
+        setLongitudePlace(e.latlng.lng);
+        map.flyTo(e.latlng, map.getZoom());
+      },
+    });
+
+    return latitudePlace === null ? null : (
+      <Marker position={[latitudePlace, longitudePlace]}>
+        <Popup>
+          <div>
+            <p>Latitude: {latitudePlace}</p>
+            <p>Longitude: {longitudePlace}</p>
+          </div>
+        </Popup>
+      </Marker>
+    );
   };
 
   return (
@@ -172,6 +206,17 @@ const EditPlace = () => {
                       Mettre à jour
                     </Button>
                   </Form>
+                  <MapContainer
+                    center={[latitudePlace || 51.505, longitudePlace || -0.09]}
+                    zoom={13}
+                    style={{ height: "400px", width: "100%", marginTop: "20px" }}
+                  >
+                    <TileLayer
+                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    />
+                    <LocationMarker />
+                  </MapContainer>
                 </div>
               </div>
             </div>

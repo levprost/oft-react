@@ -11,10 +11,10 @@ const Menu = () => {
         <Navbar.Collapse id="basic-navbar-nav">
 
           <Nav className="mx-auto">
-            <Nav.Link href="#home" className="text-white fw-bold">Accueil</Nav.Link>
-            <Nav.Link href="#about" className="text-white fw-bold">Actualité</Nav.Link>
-            <Nav.Link href="#services" className="text-white fw-bold">Guide de Saint André des Eaux</Nav.Link>
-            <Nav.Link href="#contact" className="text-white fw-bold">Galerie</Nav.Link>
+            <Nav.Link href="/home" className="text-white fw-bold">Accueil |</Nav.Link>
+            <Nav.Link href="#about" className="text-white fw-bold">Actualité |</Nav.Link>
+            <Nav.Link href="#services" className="text-white fw-bold">Guide de Saint André des Eaux |</Nav.Link>
+            <Nav.Link href="#contact" className="text-white fw-bold">Galerie |</Nav.Link>
             <Nav.Link href="#contact" className="text-white fw-bold">Contact</Nav.Link>
             <LogoutButton />
           </Nav>

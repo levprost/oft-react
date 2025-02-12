@@ -5,19 +5,20 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import L from "leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
 import Menu from "../../../components/Menu";
 
 const AddPlace = () => {
   const navigate = useNavigate();
 
-  // Состояния для формы
   const [namePlace, setNamePlace] = useState("");
   const [addressPlace, setAddressPlace] = useState("");
   const [latitudePlace, setLatitudePlace] = useState("");
   const [longitudePlace, setLongitudePlace] = useState("");
-  const [articleId, setArticleId] = useState(""); // Должно быть строкой
+  const [articleId, setArticleId] = useState(""); 
   const [articles, setArticles] = useState([]);
-
   const [validationError, setValidationError] = useState({});
 
   useEffect(() => {
@@ -33,7 +34,7 @@ const AddPlace = () => {
     }
   };
 
-  // Функция отправки данных
+
   const addPlace = async (e) => {
     e.preventDefault();
 
@@ -47,7 +48,7 @@ const AddPlace = () => {
 
       await axios.post("http://127.0.0.1:8000/api/places", formData);
       
-      navigate("/admin/places"); // Перенаправление после добавления
+      navigate("/admin/place");
     } catch (error) {
       if (error.response && error.response.status === 422) {
         setValidationError(error.response.data.errors);
@@ -55,6 +56,27 @@ const AddPlace = () => {
         console.error("Le lieu n'a pas été créé", error);
       }
     }
+  };
+
+  const LocationMarker = () => {
+    const map = useMapEvents({
+      click(e) {
+        setLatitudePlace(e.latlng.lat);
+        setLongitudePlace(e.latlng.lng);
+        map.flyTo(e.latlng, map.getZoom());
+      },
+    });
+
+    return latitudePlace === null ? null : (
+      <Marker position={[latitudePlace, longitudePlace]}>
+        <Popup>
+          <div>
+            <p>Latitude: {latitudePlace}</p>
+            <p>Longitude: {longitudePlace}</p>
+          </div>
+        </Popup>
+      </Marker>
+    );
   };
 
   return (
@@ -107,23 +129,19 @@ const AddPlace = () => {
                         <Form.Group controlId="LatitudePlace">
                           <Form.Label>Latitude</Form.Label>
                           <Form.Control
-                            type="number"
-                            step="any"
+                            type="text"
                             value={latitudePlace}
-                            onChange={(e) => setLatitudePlace(e.target.value)}
+                            readOnly
                           />
                         </Form.Group>
                       </Col>
-                    </Row>
-                    <Row>
                       <Col>
                         <Form.Group controlId="LongitudePlace">
                           <Form.Label>Longitude</Form.Label>
                           <Form.Control
-                            type="number"
-                            step="any"
+                            type="text"
                             value={longitudePlace}
-                            onChange={(e) => setLongitudePlace(e.target.value)}
+                            readOnly
                           />
                         </Form.Group>
                       </Col>
@@ -151,6 +169,19 @@ const AddPlace = () => {
                         </Form.Group>
                       </Col>
                     </Row>
+
+                    <MapContainer
+                      center={[47.3167, -2.2900]}
+                      zoom={13}
+                      style={{ height: "400px", marginTop: "20px" }}
+                    >
+                      <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                      />
+                      <LocationMarker />
+                    </MapContainer>
+
                     <Button variant="primary" className="mt-2 w-100" size="lg" type="submit">
                       Ajouter
                     </Button>

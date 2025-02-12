@@ -23,6 +23,17 @@ import Places from './pages/admin/places/Places';
 import AddPlace from './pages/admin/places/AddPlace';
 import EditPlace from './pages/admin/places/EditPlace';
 
+
+//2. User Interface
+
+// 1.1 Home Page
+
+import HomePage from "./pages/ui/HomePage";
+
+//2.2
+
+import ArticlePage from "./pages/ui/ArticlePage";
+
 const token = localStorage.getItem("access_token");
 console.log(token);
 
@@ -30,12 +41,13 @@ function App() {
   return ( 
     <BrowserRouter> 
     <Routes> 
-    <Route path="/" element={<Home />} />
-    <Route path="*" element={<Home />} />
+    <Route path="/" element={<HomePage />} />
+    <Route path="*" element={<HomePage />} />
 
     <Route path="/admin/article" element={<Articles />} />
     <Route path="/admin/article/add" element={token ? <AddArticle /> : <Login/>} />
     <Route path="/admin/article/edit/:article" element={<EditArticle />} />
+    <Route path="/article/:id" element={<ArticlePage />} />
 
     <Route path="/admin/media" element={<Media />} />
     <Route path="/admin/media/add" element={<AddMedia />} />

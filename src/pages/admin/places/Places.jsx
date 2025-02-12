@@ -42,9 +42,8 @@ const MapComponent = () => {
         >
           <Popup>
             <strong>{place.name_place}</strong> <br />
-            {place.address_place}
             <Link
-                    to={`/places/edit/${place.id}`}
+                    to={`/admin/place/edit/${place.id}`}
                     className="btn btn-success me-2"
                   >
                     Edit
