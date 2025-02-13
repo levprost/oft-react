@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from './pages/admin/Login';
+import AdminDashboard from './pages/admin/AdminDashboard'
 
 // 1.Admin
 
@@ -35,7 +36,7 @@ import HomePage from "./pages/ui/HomePage";
 import ArticlePage from "./pages/ui/ArticlePage";
 
 const token = localStorage.getItem("access_token");
-console.log(token);
+
 
 function App() {
   return ( 
@@ -44,20 +45,22 @@ function App() {
     <Route path="/" element={<HomePage />} />
     <Route path="*" element={<HomePage />} />
 
-    <Route path="/admin/article" element={<Articles />} />
-    <Route path="/admin/article/add" element={token ? <AddArticle /> : <Login/>} />
-    <Route path="/admin/article/edit/:article" element={<EditArticle />} />
+    <Route path="/admin/article" element={token ? <Articles /> : <HomePage/>} />
+    <Route path="/admin/article/add" element={token ? <AddArticle /> : <HomePage/>} />
+    <Route path="/admin/article/edit/:article" element={token ? <EditArticle /> : <HomePage/>} />
     <Route path="/article/:id" element={<ArticlePage />} />
 
-    <Route path="/admin/media" element={<Media />} />
-    <Route path="/admin/media/add" element={<AddMedia />} />
-    <Route path="/admin/media/edit/:media" element={<EditMedia />} />
+    <Route path="/admin/media" element={token ? <Media /> : <HomePage/>} />
+    <Route path="/admin/media/add" element={token ? <AddMedia /> : <HomePage/>} />
+    <Route path="/admin/media/edit/:media" element={token ? <EditMedia /> : <HomePage/>} />
 
     <Route path="/admin/place" element={<Places />} />
-    <Route path="/admin/place/add" element={token ? <AddPlace /> : <Login/>}></Route>
-    <Route path="/admin/place/edit/:place" element={<EditPlace />} />
+    <Route path="/admin/place/add" element={token ? <AddPlace /> : <HomePage/>}></Route>
+    <Route path="/admin/place/edit/:place" element={token ?<EditPlace /> : <HomePage/>} />
 
     <Route path="/login/scrt1337" element={<Login />} />
+    <Route path="/scrt1337/dash" element={token ? <AdminDashboard /> : <HomePage />} />
+    
 
     </Routes> 
 </BrowserRouter> 

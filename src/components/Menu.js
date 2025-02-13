@@ -2,6 +2,7 @@ import React from "react";
 import { Navbar, Nav, Container } from "react-bootstrap";
 import LogoutButton from "./Auth/LogoutButton";
 
+
 const Menu = () => {
   return (
     <Navbar expand="lg" className="navbar-custom" variant="dark">
@@ -21,15 +22,15 @@ const Menu = () => {
         </Navbar.Collapse>
 
 
-        <Navbar.Brand href="#home" className="ms-auto">
+        <Nav href="/home" className="">
           <img
-            src=""
+            src="/images/logo-saint-andre-des-eaux.png"
             alt="Logo"
-            width="50"
+            width="100"
             height="50"
-            className="d-inline-block align-top rounded-circle"
+            className="d-inline-block align-top"
           />
-        </Navbar.Brand>
+        </Nav>
       </Container>
     </Navbar>
   );
